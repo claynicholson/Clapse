@@ -4,6 +4,11 @@
     "description": "Lapse desktop client — timelapse recording for Hack Clubbers",
     "private": true,
     "type": "module",
+    "homepage": "https://github.com/claynicholson/Clapse",
+    "author": {
+        "name": "Clay Nicholson",
+        "email": "clay@hackclub.com"
+    },
     "main": "out/main/index.js",
     "scripts": {
         "dev": "electron-vite dev",
