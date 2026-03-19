@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: ubuntu-latest
@@ -33,12 +34,16 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Install Linux dependencies
+        if: matrix.platform == 'linux'
+        run: sudo apt-get update && sudo apt-get install -y libfuse2
+
       - name: Build workspace packages
         run: pnpm --filter @hackclub/lapse-shared --filter @hackclub/lapse-api run build
 
       - name: Build desktop app
         working-directory: apps/desktop
-        run: npx electron-vite build
+        run: pnpm exec electron-vite build
 
       - name: Get Electron version
         id: electron-ver
@@ -48,21 +53,21 @@ jobs:
       - name: Build installer (Linux)
         if: matrix.platform == 'linux'
         working-directory: apps/desktop
-        run: npx electron-builder --linux AppImage deb --config electron-builder.yml -c.electronVersion=${{ steps.electron-ver.outputs.version }}
+        run: pnpm exec electron-builder --linux AppImage deb --config electron-builder.yml -c.electronVersion=${{ steps.electron-ver.outputs.version }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build installer (macOS)
         if: matrix.platform == 'mac'
         working-directory: apps/desktop
-        run: npx electron-builder --mac dmg zip --config electron-builder.yml -c.electronVersion=${{ steps.electron-ver.outputs.version }}
+        run: pnpm exec electron-builder --mac dmg zip --config electron-builder.yml -c.electronVersion=${{ steps.electron-ver.outputs.version }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build installer (Windows)
         if: matrix.platform == 'win'
         working-directory: apps/desktop
-        run: npx electron-builder --win nsis --config electron-builder.yml -c.electronVersion=${{ steps.electron-ver.outputs.version }}
+        run: pnpm exec electron-builder --win nsis --config electron-builder.yml -c.electronVersion=${{ steps.electron-ver.outputs.version }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
