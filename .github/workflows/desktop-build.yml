@@ -53,21 +53,21 @@ jobs:
       - name: Build installer (Linux)
         if: matrix.platform == 'linux'
         working-directory: apps/desktop
-        run: pnpm exec electron-builder --linux AppImage deb --config electron-builder.yml -c.electronVersion=${{ steps.electron-ver.outputs.version }}
+        run: pnpm exec electron-builder --linux AppImage deb --config electron-builder.yml -c.electronVersion=${{ steps.electron-ver.outputs.version }} --publish never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build installer (macOS)
         if: matrix.platform == 'mac'
         working-directory: apps/desktop
-        run: pnpm exec electron-builder --mac dmg zip --config electron-builder.yml -c.electronVersion=${{ steps.electron-ver.outputs.version }}
+        run: pnpm exec electron-builder --mac dmg zip --config electron-builder.yml -c.electronVersion=${{ steps.electron-ver.outputs.version }} --publish never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build installer (Windows)
         if: matrix.platform == 'win'
         working-directory: apps/desktop
-        run: pnpm exec electron-builder --win nsis --config electron-builder.yml -c.electronVersion=${{ steps.electron-ver.outputs.version }}
+        run: pnpm exec electron-builder --win nsis --config electron-builder.yml -c.electronVersion=${{ steps.electron-ver.outputs.version }} --publish never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
